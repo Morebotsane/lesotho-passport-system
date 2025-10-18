@@ -1,0 +1,141 @@
+# app/main.py - FIXED VERSION
+from app.core.redis_config import redis_manager
+from app.security import AuditMiddleware
+from app.security import RateLimitMiddleware
+from app.api.notifications import router as notification_router
+from app.api.officer_dashboard import router as dashboard_router
+from app.api.appointments import router as appointment_router
+from app.api import diagnostics, metrics, health
+import sys
+import os
+from app.api import auth, passport_applications, users  # Add users
+
+# Add the parent directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
+from app.core.config import settings
+from app.database import SessionLocal  # ← ADD THIS IMPORT!
+from app.api.auth import router as auth_router
+from app.api.passport_applications import router as passport_router
+
+# Create FastAPI instance
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    description=settings.DESCRIPTION,
+    version=settings.VERSION,
+    docs_url="/docs",  # Swagger UI
+    redoc_url="/redoc"  # ReDoc UI
+)
+
+# ← FIX: Add the db_session_factory parameter!
+app.add_middleware(
+    AuditMiddleware,
+    db_session_factory=SessionLocal  # ← THIS WAS MISSING!
+)
+
+app.add_middleware(
+    RateLimitMiddleware, 
+    redis_url=settings.REDIS_URL
+)
+
+# Configure CORS (Cross-Origin Resource Sharing)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:5174"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
+
+# Include authentication routes
+app.include_router(
+    auth_router,
+    prefix=f"{settings.API_V1_STR}/auth",
+    tags=["Authentication"]
+)
+
+# Include passport application routes
+app.include_router(
+    passport_router,
+    prefix=f"{settings.API_V1_STR}/passport-applications",
+    tags=["Passport Applications"]
+)
+
+app.include_router(
+    notification_router,
+    prefix=f"{settings.API_V1_STR}/notifications",
+    tags=["SMS Notifications"]
+)
+
+app.include_router(
+    dashboard_router,
+    prefix=f"{settings.API_V1_STR}/officer",
+    tags=["Officer Dashboard"]
+)
+
+app.include_router(
+    appointment_router,
+    prefix=f"{settings.API_V1_STR}/appointments",
+    tags=["Appointment Scheduling"]
+)
+
+app.include_router(
+    users.router, prefix="/api/v1/users", 
+    tags=["User Management"]
+)
+
+app.include_router(
+    diagnostics.router, 
+    prefix="/api/v1", 
+    tags=["Diagnostics"]
+)
+
+app.include_router(
+    health.router, 
+    prefix="/api/v1", 
+    tags=["Health"]
+)
+
+app.include_router(
+    metrics.router, 
+    prefix="/api/v1", 
+    tags=["Metrics"]
+)
+
+# Add this startup event
+@app.on_event("startup")
+async def startup_event():
+    """Initialize services on startup"""
+    try:
+        redis_manager.initialize()
+        print("✅ Redis initialized successfully")
+    except Exception as e:
+        print(f"❌ Redis initialization failed: {e}")
+
+# Health check endpoints
+@app.get("/")
+async def root():
+    """
+    Root endpoint - Health check
+    """
+    return {
+        "message": f"{settings.PROJECT_NAME} API",
+        "status": "healthy",
+        "version": settings.VERSION,
+        "environment": settings.ENVIRONMENT
+    }
+
+# Run the app (only when running this file directly)
+if __name__ == "__main__":
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        log_level="info"
+    )

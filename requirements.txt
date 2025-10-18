@@ -1,0 +1,39 @@
+﻿# Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.12.1
+
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# Environment & Config
+python-decouple==3.8
+pydantic-settings==2.0.3
+
+# Email Validation
+email-validator==2.1.0
+
+# SMS Service
+twilio==8.10.0
+
+# Background Tasks & Caching
+celery==5.3.4
+redis==5.0.1
+hiredis==2.2.3  # For better performance
+celery[redis]==5.3.4
+flower==2.0.1  # Optional: web-based monitoring tool
+
+# HTTP Requests
+httpx==0.25.2
+
+# Development & Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.11.0
+flake8==6.1.0
