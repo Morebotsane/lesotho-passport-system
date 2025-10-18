@@ -24,7 +24,7 @@ twilio==8.10.0
 
 # Background Tasks & Caching
 celery==5.3.4
-redis==5.0.1
+redis==4.6.0
 hiredis==2.2.3  # For better performance
 celery[redis]==5.3.4
 flower==2.0.1  # Optional: web-based monitoring tool
