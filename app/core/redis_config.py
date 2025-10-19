@@ -260,10 +260,13 @@ class SessionStore:
 # Global cache service instance
 cache_service = None
 
+try:
+    cache_service = CacheService()
+except Exception as e:
+    print(f"Warning: Redis not available: {e}")
+    cache_service = None
+
 def get_cache_service():
-    global cache_service
-    if cache_service is None:
-        cache_service = CacheService()
     return cache_service
 
 session_store = SessionStore()
