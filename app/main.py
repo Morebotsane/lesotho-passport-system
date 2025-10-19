@@ -145,6 +145,13 @@ async def root():
         "environment": settings.ENVIRONMENT
     }
 
+@app.get("/{full_path:path}")
+async def catch_all(full_path: str):
+    index_path = os.path.join(frontend_path, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"detail": "Frontend not found"}    
+
 # Run the app (only when running this file directly)
 if __name__ == "__main__":
     uvicorn.run(
