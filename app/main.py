@@ -6,6 +6,8 @@ from app.api.notifications import router as notification_router
 from app.api.officer_dashboard import router as dashboard_router
 from app.api.appointments import router as appointment_router
 from app.api import diagnostics, metrics, health
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import sys
 import os
 from app.api import auth, passport_applications, users  # Add users
@@ -30,6 +32,19 @@ app = FastAPI(
     docs_url="/docs",  # Swagger UI
     redoc_url="/redoc"  # ReDoc UI
 )
+
+# Path to your React build
+frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+
+# Serve static assets (like JS/CSS/images)
+if os.path.exists(frontend_path):
+    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
+
+# Serve the React index.html for the root route
+@app.get("/")
+async def serve_react_app():
+    index_path = os.path.join(frontend_path, "index.html")
+    return FileResponse(index_path)
 
 # ← FIX: Add the db_session_factory parameter!
 app.add_middleware(
