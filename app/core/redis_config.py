@@ -258,7 +258,14 @@ class SessionStore:
             return False
 
 # Global cache service instance
-cache_service = CacheService()
+cache_service = None
+
+def get_cache_service():
+    global cache_service
+    if cache_service is None:
+        cache_service = CacheService()
+    return cache_service
+
 session_store = SessionStore()
 
 # Utility functions for common caching patterns
