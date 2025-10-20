@@ -11,7 +11,7 @@ config = context.config
 
 
 # Use DATABASE_URL from env when present (Railway will inject it).
-db_url = os.environ.get("postgresql://postgres:FTfqdZUVQgRUgLWmJqEZyaaCteBYxHyj@postgres.railway.internal:5432/railway")
+db_url = os.environ.get("postgresql://postgres:FTfqdZUVQgRUgLWmJqEZyaaCteBYxHyj@mainline.proxy.rlwy.net:22331/railway")
 if db_url:
     config.set_main_option("sqlalchemy.url", db_url)
 
