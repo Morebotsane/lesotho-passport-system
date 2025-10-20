@@ -9,6 +9,12 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 
+
+# Use DATABASE_URL from env when present (Railway will inject it).
+db_url = os.environ.get("postgresql://postgres:FTfqdZUVQgRUgLWmJqEZyaaCteBYxHyj@postgres.railway.internal:5432/railway")
+if db_url:
+    config.set_main_option("sqlalchemy.url", db_url)
+
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
