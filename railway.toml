@@ -4,6 +4,7 @@ buildCommand = """
 apt-get update && apt-get install -y nodejs npm
 pip install --no-cache-dir -r requirements.txt
 cd frontend && npm ci --prefer-offline --no-audit && npm run build
+
 """
 
 [start]
