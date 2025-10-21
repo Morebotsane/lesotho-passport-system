@@ -11,6 +11,7 @@ from fastapi.responses import FileResponse
 import sys
 import os
 from app.api import auth, passport_applications, users  # Add users
+import hashlib, pathlib
 
 # Add the parent directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -131,6 +132,8 @@ async def startup_event():
         print("✅ Redis initialized successfully")
     except Exception as e:
         print(f"❌ Redis initialization failed: {e}")
+
+    print("SECURITY FILE HASH:", hashlib.md5(pathlib.Path("app/core/security.py").read_bytes()).hexdigest())
 
 # Health check endpoints
 @app.get("/")
