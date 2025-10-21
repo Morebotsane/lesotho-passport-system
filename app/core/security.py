@@ -101,18 +101,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     sha_hash = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
     return pwd_context.verify(sha_hash, hashed_password)
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """
-    Verify a password against its hash
-    
-    Args:
-        plain_password: Plain text password to verify
-        hashed_password: Stored hashed password
-        
-    Returns:
-        True if password matches, False otherwise
-    """
-    return pwd_context.verify(plain_password, hashed_password)
 
 def generate_password_reset_token(email: str) -> str:
     """
