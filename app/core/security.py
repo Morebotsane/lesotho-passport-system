@@ -6,6 +6,8 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 import secrets
 import string
+import hashlib
+from passlib.context import CryptContext
 
 from app.core.config import settings
 from app.models.user import User
@@ -83,17 +85,21 @@ def verify_token(token: str) -> Optional[str]:
 
 def get_password_hash(password: str) -> str:
     """
-    Hash password safely with length constraint for bcrypt.
+    Hash password safely by first reducing long inputs with SHA-256,
+    then hashing with bcrypt.
     """
-    # Convert to string just in case
+    # Ensure password is a string
     password = str(password)
 
-    # bcrypt only supports up to 72 bytes, so we truncate safely
-    if len(password.encode("utf-8")) > 72:
-        password = password.encode("utf-8")[:72].decode("utf-8", errors="ignore")
+    # Hash with SHA-256 first (always 64 chars)
+    sha_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
 
-    return pwd_context.hash(password)
+    # Then bcrypt-hash the result
+    return pwd_context.hash(sha_hash)
 
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    sha_hash = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
+    return pwd_context.verify(sha_hash, hashed_password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
