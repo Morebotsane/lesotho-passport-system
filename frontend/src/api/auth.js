@@ -6,7 +6,7 @@ import apiClient from './axios';
  * @returns {Promise<object>} User data
  */
 export const register = async (userData) => {
-  return await apiClient.post('/auth/register', userData);
+  return await apiClient.post('/register', userData);
 };
 
 /**
