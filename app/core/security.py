@@ -83,15 +83,21 @@ def verify_token(token: str) -> Optional[str]:
 
 def get_password_hash(password: str) -> str:
     """
-    Hash a password using bcrypt
-    
-    Args:
-        password: Plain text password
-        
-    Returns:
-        Hashed password string
+    Hash the user's password safely.
+
+    Bcrypt supports a maximum of 72 bytes; truncate longer passwords
+    to avoid internal Passlib errors.
     """
-    return pwd_context.hash(password)
+    if isinstance(password, str):
+        password_bytes = password.encode("utf-8")
+    else:
+        password_bytes = password
+
+    # Truncate safely to 72 bytes before hashing
+    password_bytes = password_bytes[:72]
+    safe_password = password_bytes.decode("utf-8", errors="ignore")
+
+    return pwd_context.hash(safe_password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
