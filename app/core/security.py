@@ -85,19 +85,23 @@ def verify_token(token: str) -> Optional[str]:
 
 def get_password_hash(password: str) -> str:
     """
-    Hash password safely by first reducing long inputs with SHA-256,
-    then hashing with bcrypt.
+    First hash with SHA-256 to normalize length,
+    then hash with bcrypt for secure storage.
+    Includes debug logging to confirm execution.
     """
-    # Ensure password is a string
     password = str(password)
-
-    # Hash with SHA-256 first (always 64 chars)
     sha_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-
-    # Then bcrypt-hash the result
+    
+    # 🔍 Debug print for Railway logs
+    print(f"[DEBUG {datetime.datetime.utcnow().isoformat()}] "
+          f"Running SHA256+bcrypt hybrid hash | raw_len={len(password)} | sha_len={len(sha_hash)}")
+    
     return pwd_context.hash(sha_hash)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Verify a password that was stored using the SHA256+bcrypt hybrid scheme.
+    """
     sha_hash = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
     return pwd_context.verify(sha_hash, hashed_password)
 
