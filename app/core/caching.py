@@ -84,7 +84,11 @@ def cache_response(
                 cache_key = generate_cache_key(prefix, *args, **kwargs) + key_suffix
             
             # Try to get from cache
-            cached_result = cache_service.get(cache_key)
+            if cache_service: 
+                cached_result = cache_service.get(cache_key) 
+            else: 
+                cached_result = None
+
             if cached_result is not None:
                 logger.debug(f"Cache HIT for key: {cache_key}")
                 return cached_result
@@ -93,11 +97,12 @@ def cache_response(
             result = await func(*args, **kwargs)
             
             # Cache the result
-            cache_ttl = ttl or settings.CACHE_DEFAULT_TTL
-            if cache_service.set(cache_key, jsonable_encoder(result), cache_ttl):
-                logger.debug(f"Cached result for key: {cache_key} (TTL: {cache_ttl}s)")
-            else:
-                logger.warning(f"Failed to cache result for key: {cache_key}")
+            if cache_service:
+                cache_ttl = ttl or settings.CACHE_DEFAULT_TTL
+                if cache_service.set(cache_key, jsonable_encoder(result), cache_ttl):
+                    logger.debug(f"Cached result for key: {cache_key} (TTL: {cache_ttl}s)")
+                else:
+                    logger.warning(f"Failed to cache result for key: {cache_key}")
             
             return result
             
@@ -119,16 +124,21 @@ def cache_response(
                 key_suffix = f":user:{user_id}" if user_id else ""
                 cache_key = generate_cache_key(prefix, *args, **kwargs) + key_suffix
             
-            cached_result = cache_service.get(cache_key)
+            if cache_service: 
+                cached_result = cache_service.get(cache_key) 
+            else: 
+                cached_result = None
+
             if cached_result is not None:
                 logger.debug(f"Cache HIT for key: {cache_key}")
                 return cached_result
             
             result = func(*args, **kwargs)
             
-            cache_ttl = ttl or settings.CACHE_DEFAULT_TTL
-            if cache_service.set(cache_key, jsonable_encoder(result), cache_ttl):
-                logger.debug(f"Cached result for key: {cache_key} (TTL: {cache_ttl}s)")
+            if cache_service:
+                cache_ttl = ttl or settings.CACHE_DEFAULT_TTL
+                if cache_service.set(cache_key, jsonable_encoder(result), cache_ttl):
+                    logger.debug(f"Cached result for key: {cache_key} (TTL: {cache_ttl}s)")
             
             return result
         
