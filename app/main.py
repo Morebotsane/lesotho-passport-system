@@ -123,6 +123,24 @@ app.include_router(
     tags=["Metrics"]
 )
 
+# Serve React frontend static files
+frontend_build_dir = "frontend/dist"
+if os.path.exists(frontend_build_dir):
+    app.mount("/assets", StaticFiles(directory=f"{frontend_build_dir}/assets"), name="assets")
+    
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        """Serve React app for all non-API routes"""
+        if full_path.startswith("api/"):
+            return {"detail": "Not Found"}
+        
+        file_path = os.path.join(frontend_build_dir, full_path)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        
+        # Serve index.html for all other routes (React Router)
+        return FileResponse(os.path.join(frontend_build_dir, "index.html"))
+
 # Add this startup event
 @app.on_event("startup")
 async def startup_event():
