@@ -93,7 +93,7 @@ def get_password_hash(password: str) -> str:
     sha_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
     
     # 🔍 Debug print for Railway logs
-    print(f"[DEBUG {datetime.datetime.utcnow().isoformat()}] "
+    print(f"[DEBUG {datetime.utcnow().isoformat()}] "
           f"Running SHA256+bcrypt hybrid hash | raw_len={len(password)} | sha_len={len(sha_hash)}")
     
     return pwd_context.hash(sha_hash)
