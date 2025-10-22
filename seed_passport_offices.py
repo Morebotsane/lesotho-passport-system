@@ -28,7 +28,7 @@ def seed_passport_offices():
             "opens_at": time(8, 0),
             "closes_at": time(16, 30),
             "operating_days": "0,1,2,3,4",  # Mon-Fri
-            "slot_duration_minutes": 20,
+            "slot_duration_minutes": 30,
             "max_appointments_per_slot": 3,
             "advance_booking_days": 21
         },
@@ -37,8 +37,8 @@ def seed_passport_offices():
             "address": "District Administrator's Office, Main Road, Leribe",
             "phone": "+266 2240 0234",
             "email": "passports.leribe@gov.ls",
-            "opens_at": time(8, 30),
-            "closes_at": time(16, 0),
+            "opens_at": time(8, 0),
+            "closes_at": time(16, 30),
             "operating_days": "0,1,2,3,4",
             "slot_duration_minutes": 30,
             "max_appointments_per_slot": 2,
@@ -49,9 +49,9 @@ def seed_passport_offices():
             "address": "Government Complex, Teyateyaneng",
             "phone": "+266 2250 0445",
             "email": "passports.berea@gov.ls",
-            "opens_at": time(8, 30),
-            "closes_at": time(16, 0),
-            "operating_days": "1,2,3,4",  # Tue-Fri (closed Mondays)
+            "opens_at": time(8, 0),
+            "closes_at": time(16, 30),
+            "operating_days": "0,1,2,3,4",  # Tue-Fri (closed Mondays)
             "slot_duration_minutes": 30,
             "max_appointments_per_slot": 2,
             "advance_booking_days": 14
@@ -61,9 +61,9 @@ def seed_passport_offices():
             "address": "District Commissioner's Office, Mafeteng",
             "phone": "+266 2270 0156",
             "email": "passports.mafeteng@gov.ls",
-            "opens_at": time(8, 30),
-            "closes_at": time(16, 0),
-            "operating_days": "0,2,4",  # Mon, Wed, Fri
+            "opens_at": time(8, 0),
+            "closes_at": time(16, 30),
+            "operating_days": "0,1,2,3,4",  # Mon, Wed, Fri
             "slot_duration_minutes": 30,
             "max_appointments_per_slot": 1,
             "advance_booking_days": 10
@@ -73,9 +73,9 @@ def seed_passport_offices():
             "address": "Government Offices, Mohale's Hoek",
             "phone": "+266 2278 5432",
             "email": "passports.mohaleshoek@gov.ls",
-            "opens_at": time(9, 0),
-            "closes_at": time(15, 30),
-            "operating_days": "0,2,4",  # Mon, Wed, Fri
+            "opens_at": time(8, 0),
+            "closes_at": time(16, 30),
+            "operating_days": "0,1,2,3,4",  # Mon, Wed, Fri
             "slot_duration_minutes": 30,
             "max_appointments_per_slot": 1,
             "advance_booking_days": 10
@@ -85,9 +85,9 @@ def seed_passport_offices():
             "address": "District Administration Building, Quthing",
             "phone": "+266 2295 0123",
             "email": "passports.quthing@gov.ls",
-            "opens_at": time(8, 30),
-            "closes_at": time(15, 30),
-            "operating_days": "1,3",  # Tue, Thu only
+            "opens_at": time(8, 0),
+            "closes_at": time(16, 30),
+            "operating_days": "0,1,2,3,4",  # Tue, Thu only
             "slot_duration_minutes": 45,
             "max_appointments_per_slot": 1,
             "advance_booking_days": 7
@@ -97,9 +97,9 @@ def seed_passport_offices():
             "address": "Government Complex, Qacha's Nek",
             "phone": "+266 2295 4567",
             "email": "passports.qachasnek@gov.ls",
-            "opens_at": time(9, 0),
-            "closes_at": time(15, 0),
-            "operating_days": "1,3",  # Tue, Thu only  
+            "opens_at": time(8, 0),
+            "closes_at": time(16, 30),
+            "operating_days": "0,1,2,3,4",  # Tue, Thu only  
             "slot_duration_minutes": 45,
             "max_appointments_per_slot": 1,
             "advance_booking_days": 7
@@ -109,9 +109,9 @@ def seed_passport_offices():
             "address": "District Office Complex, Butha-Buthe",
             "phone": "+266 2246 0890",
             "email": "passports.buthabuthe@gov.ls",
-            "opens_at": time(8, 30),
-            "closes_at": time(16, 0),
-            "operating_days": "0,2,4",  # Mon, Wed, Fri
+            "opens_at": time(8, 0),
+            "closes_at": time(16, 30),
+            "operating_days": "0,1,2,3,4",  # Mon, Wed, Fri
             "slot_duration_minutes": 30,
             "max_appointments_per_slot": 2,
             "advance_booking_days": 14
@@ -121,9 +121,9 @@ def seed_passport_offices():
             "address": "District Administrative Centre, Mokhotlong",
             "phone": "+266 2290 2345",
             "email": "passports.mokhotlong@gov.ls",
-            "opens_at": time(9, 0),
-            "closes_at": time(15, 0),
-            "operating_days": "1,4",  # Tue, Fri only
+            "opens_at": time(8, 0),
+            "closes_at": time(16, 30),
+            "operating_days": "0,1,2,3,4",  # Tue, Fri only
             "slot_duration_minutes": 60,
             "max_appointments_per_slot": 1,
             "advance_booking_days": 7
@@ -133,9 +133,9 @@ def seed_passport_offices():
             "address": "Government Buildings, Thaba-Tseka",
             "phone": "+266 2290 6789",
             "email": "passports.thabatseka@gov.ls",
-            "opens_at": time(9, 0),
-            "closes_at": time(15, 0),
-            "operating_days": "2,4",  # Wed, Fri only
+            "opens_at": time(8, 0),
+            "closes_at": time(16, 30),
+            "operating_days": "0,1,2,3,4",  # Wed, Fri only
             "slot_duration_minutes": 60,
             "max_appointments_per_slot": 1,
             "advance_booking_days": 7
