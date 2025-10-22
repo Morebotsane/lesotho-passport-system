@@ -1,7 +1,7 @@
+import { Lock, LogIn, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Mail, Lock, LogIn } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -163,7 +163,7 @@ const handleSubmit = async (e) => {
             🧪 Development Mode - Test Credentials:
           </p>
           <p className="text-xs text-yellow-700">
-            <strong>Applicant:</strong> test@applicant.com / password123
+            <strong>Applicant:</strong> test@applicant.com / Password#123
           </p>
         </div>
       </div>
