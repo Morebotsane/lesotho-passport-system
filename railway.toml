@@ -3,4 +3,4 @@ builder = "NIXPACKS"
 buildCommand = "apt-get update && apt-get install -y nodejs npm && pip install --no-cache-dir -r requirements.txt && cd frontend && npm ci --prefer-offline --no-audit && npm run build"
 
 [start]
-startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+startCommand = "python seed_passport_offices.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
