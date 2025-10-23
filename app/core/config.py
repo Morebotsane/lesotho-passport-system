@@ -1,7 +1,7 @@
 # app/core/config.py - CORRECTED VERSION
 from typing import Any, Dict, Optional, List
 from pydantic_settings import BaseSettings
-from pydantic import validator
+from pydantic import validator, Field
 from pathlib import Path
 
 class Settings(BaseSettings):
