@@ -82,8 +82,8 @@ class Settings(BaseSettings):
     SMS_RETRY_ATTEMPTS: int = 3
     SMS_RETRY_DELAY_MINUTES: int = 5
 
-    CELERY_BROKER_URL: str = "redis://localhost:6379/0"
-    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/1"
+    CELERY_BROKER_URL: str = Field(default="redis://localhost:6379/0") 
+    CELERY_RESULT_BACKEND: str = Field(default="redis://localhost:6379/1")
 
     # File Upload Settings
     UPLOAD_DIR: str = "uploads/passport_documents"
