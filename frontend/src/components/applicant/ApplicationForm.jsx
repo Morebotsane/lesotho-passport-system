@@ -71,6 +71,54 @@ export default function ApplicationForm() {
 
   const [errors, setErrors] = useState({});
 
+  // Check if current step is complete and valid
+  const isStepValid = () => {
+    if (currentStep === 1) {
+      const requiredFields = [
+        "first_name",
+        "last_name",
+        "gender",
+        "email",
+        "phone",
+        "date_of_birth",
+        "place_of_birth",
+        "residential_address",
+        "submission_location_id",
+      ];
+
+      // Check all required fields are filled
+      const allFilled = requiredFields.every((field) => {
+        const value = formData[field];
+        return value && value.toString().trim() !== "";
+      });
+
+      // Check no validation errors
+      const noErrors = requiredFields.every((field) => !errors[field]);
+
+      return allFilled && noErrors;
+    }
+
+    if (currentStep === 2) {
+      const requiredFields = ["passport_type", "reason_for_issuance"];
+      const allFilled = requiredFields.every(
+        (field) => formData[field] && formData[field].toString().trim() !== ""
+      );
+      const noErrors = requiredFields.every((field) => !errors[field]);
+      return allFilled && noErrors;
+    }
+
+    if (currentStep === 3) {
+      const requiredFields = ["photo", "id_document"];
+      const allFilled = requiredFields.every(
+        (field) => formData[field] !== null
+      );
+      const noErrors = requiredFields.every((field) => !errors[field]);
+      return allFilled && noErrors;
+    }
+
+    return true; // Step 4 is just review
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -795,7 +843,7 @@ export default function ApplicationForm() {
           {currentStep < STEPS.length ? (
             <button
               onClick={nextStep}
-              disabled={Object.keys(errors).length > 0}
+              disabled={!isStepValid()}
               className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
