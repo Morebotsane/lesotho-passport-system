@@ -138,6 +138,9 @@ def _check_redis() -> Dict[str, Any]:
     Check Redis health
     Tests: Connection, ping, memory usage
     """
+    print(f"🔍 DEBUG: CELERY_BROKER_URL = {settings.CELERY_BROKER_URL}") 
+    print(f"🔍 DEBUG: REDIS_URL = {settings.REDIS_URL}")
+    
     try:
         # Connect to Redis
         redis_client = redis.Redis.from_url(
