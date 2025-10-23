@@ -1,50 +1,90 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { Mail, Lock, User, Phone, UserPlus } from 'lucide-react';
+import { Lock, Mail, Phone, User, UserPlus } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import {
+  getFieldValidationError,
+  validatePassword,
+} from "../../utils/validators";
 
 export default function Signup() {
   const navigate = useNavigate();
   const { register } = useAuth();
-  
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    first_name: '',
-    last_name: '',
-    phone: '',
+    email: "",
+    password: "",
+    confirmPassword: "",
+    first_name: "",
+    last_name: "",
+    phone: "",
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
-    // Clear error for this field when user types
-    if (errors[e.target.name]) {
-      setErrors({
-        ...errors,
-        [e.target.name]: null,
-      });
+
+    // Real-time validation
+    let error = "";
+
+    if (name === "password") {
+      const passwordValidation = validatePassword(value);
+      error = passwordValidation.isValid ? "" : passwordValidation.errors[0];
+    } else if (name === "confirmPassword") {
+      error = value !== formData.password ? "Passwords do not match" : "";
+    } else {
+      error = getFieldValidationError(name, value, formData);
     }
+
+    setErrors({
+      ...errors,
+      [name]: error,
+    });
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+    // Validate all fields
+    const fields = ["first_name", "last_name", "email", "phone"];
+    fields.forEach((field) => {
+      const error = getFieldValidationError(field, formData[field], formData);
+      if (error) newErrors[field] = error;
+    });
+
+    // Password validation
+    const passwordValidation = validatePassword(formData.password);
+    if (!passwordValidation.isValid) {
+      newErrors.password = passwordValidation.errors[0];
     }
 
-    if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+    // Confirm password
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const isFormValid = () => {
+    const allFieldsFilled =
+      formData.first_name &&
+      formData.last_name &&
+      formData.email &&
+      formData.phone &&
+      formData.password &&
+      formData.confirmPassword;
+
+    const noErrors = Object.values(errors).every((error) => !error);
+
+    return allFieldsFilled && noErrors;
   };
 
   const handleSubmit = async (e) => {
@@ -59,7 +99,7 @@ export default function Signup() {
     try {
       // Don't send confirmPassword to API
       //const { confirmPassword: _, ...userData } = formData;
-      
+
       // Add role: applicant for self-registration
       await register({
         email: formData.email,
@@ -68,13 +108,13 @@ export default function Signup() {
         first_name: formData.first_name,
         last_name: formData.last_name,
         phone: formData.phone,
-        role: 'applicant'
+        role: "applicant",
       });
-      
+
       // Redirect to applicant dashboard after successful registration
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error("Signup error:", error);
     } finally {
       setLoading(false);
     }
@@ -91,9 +131,7 @@ export default function Signup() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Create Account
           </h1>
-          <p className="text-gray-600">
-            Join Lesotho Passport System
-          </p>
+          <p className="text-gray-600">Join Lesotho Passport System</p>
         </div>
 
         {/* Signup Form */}
@@ -114,10 +152,15 @@ export default function Signup() {
                 required
                 value={formData.first_name}
                 onChange={handleChange}
-                className="input-field pl-10"
-                placeholder="John"
+                className={`input-field pl-10 ${
+                  errors.first_name ? "border-red-500" : ""
+                }`}
+                placeholder="Mokhele"
                 disabled={loading}
               />
+              {errors.first_name && (
+                <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>
+              )}
             </div>
           </div>
 
@@ -137,10 +180,15 @@ export default function Signup() {
                 required
                 value={formData.last_name}
                 onChange={handleChange}
-                className="input-field pl-10"
-                placeholder="Doe"
+                className={`input-field pl-10 ${
+                  errors.last_name ? "border-red-500" : ""
+                }`}
+                placeholder="Mohapi"
                 disabled={loading}
               />
+              {errors.first_name && (
+                <p className="text-red-500 text-sm mt-1">{errors.last_name}</p>
+              )}
             </div>
           </div>
 
@@ -160,10 +208,15 @@ export default function Signup() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="input-field pl-10"
-                placeholder="you@example.com"
+                className={`input-field pl-10 ${
+                  errors.email ? "border-red-500" : ""
+                }`}
+                placeholder="mohapi@gmail.com"
                 disabled={loading}
               />
+              {errors.first_name && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
           </div>
 
@@ -183,10 +236,15 @@ export default function Signup() {
                 required
                 value={formData.phone}
                 onChange={handleChange}
-                className="input-field pl-10"
+                className={`input-field pl-10 ${
+                  errors.phone ? "border-red-500" : ""
+                }`}
                 placeholder="+266 5XXX XXXX"
                 disabled={loading}
               />
+              {errors.first_name && (
+                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+              )}
             </div>
           </div>
 
@@ -206,7 +264,9 @@ export default function Signup() {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className={`input-field pl-10 ${errors.password ? 'input-error' : ''}`}
+                className={`input-field pl-10 ${
+                  errors.password ? "input-error" : ""
+                }`}
                 placeholder="••••••••"
                 disabled={loading}
               />
@@ -232,7 +292,9 @@ export default function Signup() {
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`input-field pl-10 ${errors.confirmPassword ? 'input-error' : ''}`}
+                className={`input-field pl-10 ${
+                  errors.confirmPassword ? "input-error" : ""
+                }`}
                 placeholder="••••••••"
                 disabled={loading}
               />
@@ -245,8 +307,8 @@ export default function Signup() {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={loading}
-            className="btn-primary w-full flex items-center justify-center gap-2"
+            disabled={loading || !isFormValid()}
+            className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
@@ -267,7 +329,7 @@ export default function Signup() {
 
         {/* Login Link */}
         <p className="text-center text-sm text-gray-600">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link
             to="/login"
             className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
