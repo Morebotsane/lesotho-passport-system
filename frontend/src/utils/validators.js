@@ -289,3 +289,113 @@ export const getFieldError = (errors, field) => {
 export const hasFieldError = (errors, field) => {
   return !!errors[field];
 };
+
+/**
+ * Get validation error message for a specific field
+ * Returns empty string if valid, error message if invalid
+ */
+export const getFieldValidationError = (fieldName, value, formData = {}) => {
+  switch (fieldName) {
+    case 'first_name':
+    case 'last_name':
+      if (!value || value.trim() === '') return `${fieldName === 'first_name' ? 'First name' : 'Last name'} is required`;
+      if (value.trim().length < 2) return 'Must be at least 2 characters';
+      if (value.trim().length > 50) return 'Must be less than 50 characters';
+      if (!/^[a-zA-Z\s\-']+$/.test(value)) return 'Can only contain letters, spaces, hyphens, and apostrophes';
+      return '';
+      
+    case 'email':
+      if (!value) return 'Email is required';
+      if (!isValidEmail(value)) return 'Please enter a valid email address';
+      return '';
+      
+    case 'phone':
+      if (!value) return 'Phone number is required';
+      const cleanPhone = value.replace(/\D/g, '');
+      if (cleanPhone.length < 8) return 'Phone number must be at least 8 digits (e.g., 58129821)';
+      if (cleanPhone.length > 15) return 'Phone number is too long';
+      return '';
+      
+    case 'date_of_birth':
+      if (!value) return 'Date of birth is required';
+      if (!isAgeAboveMinimum(value, 16)) return 'Applicant must be at least 16 years old';
+      if (!isDateNotTooOld(value, 120)) return 'Please enter a valid date of birth';
+      return '';
+      
+    case 'residential_address':
+      if (!value) return 'Residential address is required';
+      if (value.trim().length < 10) return 'Address must be at least 10 characters (e.g., "123 Main St, Maseru")';
+      return '';
+      
+    case 'place_of_birth':
+    case 'gender':
+    case 'submission_location_id':
+    case 'passport_type':
+    case 'reason_for_issuance':
+      if (!value) {
+        const fieldNames = {
+          place_of_birth: 'Place of birth',
+          gender: 'Gender',
+          submission_location_id: 'Passport office',
+          passport_type: 'Passport type',
+          reason_for_issuance: 'Reason for issuance'
+        };
+        return `${fieldNames[fieldName]} is required`;
+      }
+      return '';
+      
+    case 'photo':
+    case 'id_document':
+      if (!value) return `${fieldName === 'photo' ? 'Passport photo' : 'ID document'} is required`;
+      if (!isValidFileSize(value, 5)) return 'File must be less than 5MB';
+      const allowedTypes = fieldName === 'photo' 
+        ? ['image/jpeg', 'image/png'] 
+        : ['image/jpeg', 'image/png', 'application/pdf'];
+      if (!isValidFileType(value, allowedTypes)) {
+        return fieldName === 'photo' 
+          ? 'Must be JPEG or PNG image'
+          : 'Must be JPEG, PNG, or PDF';
+      }
+      return '';
+      
+    default:
+      return '';
+  }
+};
+
+/**
+ * Validate all fields in a step
+ */
+export const validateApplicationStep = (step, formData) => {
+  const errors = {};
+  
+  if (step === 1) {
+    const step1Fields = [
+      'first_name', 'last_name', 'gender', 'email', 'phone',
+      'date_of_birth', 'place_of_birth', 'residential_address', 'submission_location_id'
+    ];
+    
+    step1Fields.forEach(field => {
+      const error = getFieldValidationError(field, formData[field], formData);
+      if (error) errors[field] = error;
+    });
+  }
+  
+  if (step === 2) {
+    const step2Fields = ['passport_type', 'reason_for_issuance'];
+    step2Fields.forEach(field => {
+      const error = getFieldValidationError(field, formData[field], formData);
+      if (error) errors[field] = error;
+    });
+  }
+  
+  if (step === 3) {
+    const step3Fields = ['photo', 'id_document'];
+    step3Fields.forEach(field => {
+      const error = getFieldValidationError(field, formData[field], formData);
+      if (error) errors[field] = error;
+    });
+  }
+  
+  return errors;
+};
