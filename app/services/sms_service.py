@@ -15,6 +15,9 @@ from app.models.passport_application import PassportApplication, ApplicationStat
 from app.models.user import User
 from app.tasks.notification_tasks import send_sms_notification
 
+from twilio.rest import Client
+from twilio.base.exceptions import TwilioException
+
 logger = logging.getLogger(__name__)
 
 class SMSService:
