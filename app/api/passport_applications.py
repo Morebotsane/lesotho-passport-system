@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import shutil
 from fastapi.responses import FileResponse
+from app.api.deps import get_current_officer, get_current_user, get_db
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query, File, UploadFile, Body
 from sqlalchemy.orm import Session
