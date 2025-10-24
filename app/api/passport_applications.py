@@ -432,30 +432,34 @@ def get_my_applications(
 def list_all_applications(
     *,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_officer),
+    current_user: User = Depends(get_current_user),  # ← Changed!
     limit: int = 100
 ) -> Any:
-    """Get all applications (officers only) - simple list"""
+    """Get all applications - filtered by location for officers, all for admins"""
     
     # Start with base query
     query = db.query(PassportApplication)
     
-    # CRITICAL: Filter by officer's assigned location
-    if not current_user.assigned_location_id:
-        print(f"⚠️ Officer {current_user.email} has NO assigned location!")
-        return []
-    
-    print(f"🔍 OFFICER FILTER on /all endpoint")
-    print(f"   Officer: {current_user.email}")
-    print(f"   Assigned Location: {current_user.assigned_location_id}")
-    
-    # Filter to only show applications from officer's location
-    query = query.filter(
-        PassportApplication.submission_location_id == current_user.assigned_location_id
-    )
+    # If officer, filter by assigned location
+    if current_user.role == 'officer':
+        if not current_user.assigned_location_id:
+            print(f"⚠️ Officer {current_user.email} has NO assigned location!")
+            return []
+        
+        print(f"🔍 OFFICER FILTER on /all endpoint")
+        print(f"   Officer: {current_user.email}")
+        print(f"   Assigned Location: {current_user.assigned_location_id}")
+        
+        query = query.filter(
+            PassportApplication.submission_location_id == current_user.assigned_location_id
+        )
+    else:
+        # Admin sees all applications
+        print(f"👑 ADMIN viewing ALL applications")
+        print(f"   Admin: {current_user.email}")
     
     count = query.count()
-    print(f"   ✅ Found {count} applications at this location")
+    print(f"   ✅ Found {count} applications")
     
     applications = query.order_by(
         PassportApplication.submitted_at.desc()
