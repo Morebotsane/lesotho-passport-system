@@ -8,6 +8,7 @@ from app.api.appointments import router as appointment_router
 from app.api import diagnostics, metrics, health
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from app.core.celery_app import celery_app 
 import sys
 import os
 from app.api import auth, passport_applications, users  # Add users
