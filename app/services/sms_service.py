@@ -238,6 +238,16 @@ class SMSService:
         notification.status = NotificationStatus.RETRY
         self.db.commit()
         
+        print(f"🚀 ABOUT TO QUEUE CELERY TASK for notification {notification.id}")
+        print(f"🚀 Celery broker URL: {settings.CELERY_BROKER_URL}")
+
+        try:
+            task = send_sms_notification.delay(str(notification.id))
+            print(f"✅ CELERY TASK QUEUED! Task ID: {task.id}")
+        except Exception as e:
+            print(f"❌ ERROR QUEUING CELERY TASK: {e}")
+            raise
+
         # Queue new Celery task for retry
         task = send_sms_notification.delay(str(notification.id))
         
