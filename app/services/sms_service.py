@@ -283,6 +283,9 @@ class SMSService:
         Returns:
             Notification object with PENDING/QUEUED status
         """
+
+        print(f"🎯 _queue_sms CALLED! Phone: {recipient_phone}")
+
         # Create notification record in database
         notification = Notification(
             id=uuid.uuid4(),
