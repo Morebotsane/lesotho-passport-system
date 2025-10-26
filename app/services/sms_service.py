@@ -319,7 +319,7 @@ class SMSService:
         
         # Update notification with Celery task info
         notification.celery_task_id = task.id
-        notification.celery_queue = "notifications"
+        notification.celery_queue = "celery"
         notification.status = NotificationStatus.PENDING  # Will become SENT when task runs
         self.db.commit()
         
