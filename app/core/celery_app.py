@@ -66,8 +66,8 @@ celery_app.conf.beat_schedule = {
 """
 
 # Task routing (optional - for advanced queue management)
-celery_app.conf.task_routes = {
-    "app.tasks.notification_tasks.*": {"queue": "notifications"},
-    "app.tasks.report_tasks.*": {"queue": "reports"},
-    "app.tasks.audit_tasks.*": {"queue": "maintenance"},
-}
+#celery_app.conf.task_routes = {
+#    "app.tasks.notification_tasks.*": {"queue": "notifications"},
+#    "app.tasks.report_tasks.*": {"queue": "reports"},
+#    "app.tasks.audit_tasks.*": {"queue": "maintenance"},
+#}
